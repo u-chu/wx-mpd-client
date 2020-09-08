@@ -1,0 +1,165 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-08 23:59+0500\n"
+"PO-Revision-Date: 2020-09-09 00:00+0500\n"
+"Last-Translator: ghoul.mask@gmail.com\n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: wx-mpd-client.py:84 wx-mpd-client.py:327
+msgid "Add"
+msgstr "Добавить"
+
+#: wx-mpd-client.py:85
+msgid "Update selected"
+msgstr "Обновить выделенное"
+
+#: wx-mpd-client.py:142
+msgid "Do you want to add: \n"
+msgstr "Добавить : \n"
+
+#: wx-mpd-client.py:142
+msgid "Add this?"
+msgstr "Добавить?"
+
+#: wx-mpd-client.py:248
+msgid "MPD Playlist"
+msgstr "MPD Плейлист"
+
+#: wx-mpd-client.py:257
+msgid "PlayList"
+msgstr "Плейлист"
+
+#: wx-mpd-client.py:266
+msgid "Previous"
+msgstr "Назад"
+
+#: wx-mpd-client.py:267
+msgid "Next"
+msgstr "Вперед"
+
+#: wx-mpd-client.py:269
+msgid "Stop"
+msgstr "Остановить"
+
+#: wx-mpd-client.py:270
+msgid "Pause"
+msgstr "Пауза"
+
+#: wx-mpd-client.py:271
+msgid "Play"
+msgstr "Играть"
+
+#: wx-mpd-client.py:273
+msgid "Find"
+msgstr "Поиск"
+
+#: wx-mpd-client.py:300 wx-mpd-client.py:417
+msgid "Title"
+msgstr "Имя"
+
+#: wx-mpd-client.py:310
+msgid "Delete"
+msgstr "Удалить"
+
+#: wx-mpd-client.py:313
+msgid "Search in PlayList"
+msgstr "Искать в плейлисте"
+
+#: wx-mpd-client.py:314
+msgid "Search DB"
+msgstr "Искать в музыкальной базе"
+
+#: wx-mpd-client.py:321
+msgid "Song Info"
+msgstr "Информация о песне"
+
+#: wx-mpd-client.py:324
+msgid "Music Library"
+msgstr "Библиотека"
+
+#: wx-mpd-client.py:329
+msgid "Update"
+msgstr "Обновить"
+
+#: wx-mpd-client.py:412 wx-mpd-client.py:581
+msgid "Search results"
+msgstr "Результаты поиска"
+
+#: wx-mpd-client.py:502 wx-mpd-client.py:528
+msgid "Info"
+msgstr "Инфо"
+
+#: wx-mpd-client.py:565 wx-mpd-client.py:646
+msgid "Text to find"
+msgstr "Искать текст"
+
+#: wx-mpd-client.py:565
+msgid "Search in Database"
+msgstr "Искать в музыкальной базе"
+
+#: wx-mpd-client.py:581
+msgid "Nothing found"
+msgstr "Ничего не найдено"
+
+#: wx-mpd-client.py:614
+msgid "Close page"
+msgstr "Закрыть вкладку"
+
+#: wx-mpd-client.py:616
+msgid "Add selected to list"
+msgstr "Добавить выделенное в список"
+
+#: wx-mpd-client.py:618
+msgid "Show info"
+msgstr "Показать информацию о  песне"
+
+#: wx-mpd-client.py:646
+msgid "Search in playlist"
+msgstr "Искать в плейлисте"
+
+#: wx-mpd-client.py:696
+msgid "Selected: %d:%H:%M:%S"
+msgstr "Выделено: %d:%H:%M:%S"
+
+#: wx-mpd-client.py:698
+msgid "Selected: %H:%M:%S"
+msgstr "Выделено: %H:%M:%S"
+
+#: wx-mpd-client.py:700
+msgid "Selected: %M:%S"
+msgstr "Выделено: %M:%S"
+
+#: wx-mpd-client.py:850 wx-mpd-client.py:854
+msgid "Unknown Artist"
+msgstr "Неизвестный исполнитель"
+
+#: wx-mpd-client.py:861
+msgid "Unknown Title"
+msgstr "Неизвестная песня"
+
+#: wx-mpd-client.py:865
+msgid "Unknown Year"
+msgstr "Неизвестный год"
+
+#: wx-mpd-client.py:920
+#, python-format
+msgid "Length: %s"
+msgstr "Длина: %s"
+
+#: wx-mpd-client.py:938 wx-mpd-client.py:939
+msgid "updating_db"
+msgstr "база обновляется"

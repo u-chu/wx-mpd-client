@@ -1,0 +1,163 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-08 23:59+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: wx-mpd-client.py:84 wx-mpd-client.py:327
+msgid "Add"
+msgstr ""
+
+#: wx-mpd-client.py:85
+msgid "Update selected"
+msgstr ""
+
+#: wx-mpd-client.py:142
+msgid "Do you want to add: \n"
+msgstr ""
+
+#: wx-mpd-client.py:142
+msgid "Add this?"
+msgstr ""
+
+#: wx-mpd-client.py:248
+msgid "MPD Playlist"
+msgstr ""
+
+#: wx-mpd-client.py:257
+msgid "PlayList"
+msgstr ""
+
+#: wx-mpd-client.py:266
+msgid "Previous"
+msgstr ""
+
+#: wx-mpd-client.py:267
+msgid "Next"
+msgstr ""
+
+#: wx-mpd-client.py:269
+msgid "Stop"
+msgstr ""
+
+#: wx-mpd-client.py:270
+msgid "Pause"
+msgstr ""
+
+#: wx-mpd-client.py:271
+msgid "Play"
+msgstr ""
+
+#: wx-mpd-client.py:273
+msgid "Find"
+msgstr ""
+
+#: wx-mpd-client.py:300 wx-mpd-client.py:417
+msgid "Title"
+msgstr ""
+
+#: wx-mpd-client.py:310
+msgid "Delete"
+msgstr ""
+
+#: wx-mpd-client.py:313
+msgid "Search in PlayList"
+msgstr ""
+
+#: wx-mpd-client.py:314
+msgid "Search DB"
+msgstr ""
+
+#: wx-mpd-client.py:321
+msgid "Song Info"
+msgstr ""
+
+#: wx-mpd-client.py:324
+msgid "Music Library"
+msgstr ""
+
+#: wx-mpd-client.py:329
+msgid "Update"
+msgstr ""
+
+#: wx-mpd-client.py:412 wx-mpd-client.py:581
+msgid "Search results"
+msgstr ""
+
+#: wx-mpd-client.py:502 wx-mpd-client.py:528
+msgid "Info"
+msgstr ""
+
+#: wx-mpd-client.py:565 wx-mpd-client.py:646
+msgid "Text to find"
+msgstr ""
+
+#: wx-mpd-client.py:565
+msgid "Search in Database"
+msgstr ""
+
+#: wx-mpd-client.py:581
+msgid "Nothing found"
+msgstr ""
+
+#: wx-mpd-client.py:614
+msgid "Close page"
+msgstr ""
+
+#: wx-mpd-client.py:616
+msgid "Add selected to list"
+msgstr ""
+
+#: wx-mpd-client.py:618
+msgid "Show info"
+msgstr ""
+
+#: wx-mpd-client.py:646
+msgid "Search in playlist"
+msgstr ""
+
+#: wx-mpd-client.py:696
+msgid "Selected: %d:%H:%M:%S"
+msgstr ""
+
+#: wx-mpd-client.py:698
+msgid "Selected: %H:%M:%S"
+msgstr ""
+
+#: wx-mpd-client.py:700
+msgid "Selected: %M:%S"
+msgstr ""
+
+#: wx-mpd-client.py:850 wx-mpd-client.py:854
+msgid "Unknown Artist"
+msgstr ""
+
+#: wx-mpd-client.py:861
+msgid "Unknown Title"
+msgstr ""
+
+#: wx-mpd-client.py:865
+msgid "Unknown Year"
+msgstr ""
+
+#: wx-mpd-client.py:920
+#, python-format
+msgid "Length: %s"
+msgstr ""
+
+#: wx-mpd-client.py:938 wx-mpd-client.py:939
+msgid "updating_db"
+msgstr ""

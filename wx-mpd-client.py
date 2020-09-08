@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import wx, mpd, time, cPickle, os
 import wx.lib.scrolledpanel as scrolled
+from gettext import gettext as _
+import gettext
 #~ , gtk
 #~ import wx.lib.mixins.listctrl  as  listmix
 
@@ -9,6 +11,24 @@ port=6600
 addr="localhost"
 fcname='wx-mpd-playlist.ini'
 _mark='addtorecord'
+APP_IND='wx-mpd-client'
+DIR="locale"
+
+client=mpd.MPDClient()
+
+def make_con():
+	conn=False
+	while conn==False:
+		try:
+			client.connect(addr, port)
+			conn=True
+		except:
+			conn=False
+			time.sleep(2)
+	
+	
+def _check():
+	print 'client.ping', client.ping()
 
 tags1=[
 "title",
@@ -61,8 +81,8 @@ class MPDTree(wx.TreeCtrl):
 		self.buildTree('/')
 		self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.DblClick)
 		self.menu=wx.Menu()
-		mAdd=self.menu.Append(wx.NewId(), "Add")
-		mUpdateSel=self.menu.Append(wx.NewId(), "Update selected")
+		mAdd=self.menu.Append(wx.NewId(), _("Add"))
+		mUpdateSel=self.menu.Append(wx.NewId(), _("Update selected"))
 		#~ mUpdateAll=self.menu.Append(wx.NewId(), "Update all")
 		self.Bind(wx.EVT_CONTEXT_MENU, self.OnRightBtn)
 		self.menu.Bind(wx.EVT_MENU, self.AddItem, mAdd)
@@ -98,28 +118,28 @@ class MPDTree(wx.TreeCtrl):
 
 	def UpdateSel(self, event):
 		gs=self.GetSelections()
-		client=mpd.MPDClient()
-		try:client.connect(addr, port)
-		except:return 0
+		#~ client=mpd.MPDClient()
+		#~ try:client.connect(addr, port)
+		#~ except:return 0
 		for i in gs:
 			d=dict(self.GetItemData(i).GetData())
 			if 'directory' in d.keys():
 				a=d.get('directory')
 				client.update(a)
-			client.close()
-			client.disconnect()
+			#~ client.close()
+			#~ client.disconnect()
 
 	def AddItem(self, event):
 		gs=self.GetSelections()
-		client=mpd.MPDClient()
+		#~ client=mpd.MPDClient()
 		#~ b=[]
-		try: client.connect(addr, port)
-		except: return 0
+		#~ try: client.connect(addr, port)
+		#~ except: return 0
 		for i in gs:
 			d=dict(self.GetItemData(i).GetData())
 			if 'directory' in d.keys():
 				a=d.get('directory')
-				if wx.MessageBox('Do you want to add: \n'+a, 'Add this?', wx.OK|wx.CANCEL|wx.ICON_QUESTION) != wx.OK:
+				if wx.MessageBox(_('Do you want to add: \n')+a, _('Add this?'), wx.OK|wx.CANCEL|wx.ICON_QUESTION) != wx.OK:
 					a=''
 			elif 'file' in d.keys():a=  d.get('file')
 			else:
@@ -137,13 +157,13 @@ class MPDTree(wx.TreeCtrl):
 		if rootdir=='/':rootID = self.AddRoot(rootdir)
 		else:
 			rootID = self.AddRoot('..')
-		client=mpd.MPDClient()
+		#~ client=mpd.MPDClient()
 
-		try:client.connect(addr, port)
-		except:return 0
+		#~ try:client.connect(addr, port)
+		#~ except:return 0
 		n=client.lsinfo(rootdir)
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 		d=''
 		for i in n:
 			if i.items()[0][0]=='directory':d=os.path.basename(i.items()[0][1])
@@ -171,13 +191,13 @@ class MPDTree(wx.TreeCtrl):
 			if dict(d).get('directory', False):
 				self.buildTree(d[0][1])
 			else:
-				client=mpd.MPDClient()
-				try:client.connect(addr, port)
-				except:return 0
+				#~ client=mpd.MPDClient()
+				#~ try:client.connect(addr, port)
+				#~ except:return 0
 				d=self.GetItemData(event.GetItem()).GetData()
 				client.add(dict(d).get('file'))
-				client.close()
-				client.disconnect()
+				#~ client.close()
+				#~ client.disconnect()
 
 """class TabDrop(wx.PyDropTarget):
     def __init__(self, source):
@@ -225,7 +245,7 @@ class TabPanel(wx.Panel):
 
 class MainFrame(wx.Frame):
 	def __init__ (self, x=50,y=50,w=720,h=500):
-		wx.Frame.__init__(self, None, title="MPD Playlist", size=(w,h), pos=(x,y))
+		wx.Frame.__init__(self, None, title=_("MPD Playlist"), size=(w,h), pos=(x,y))
 		self.p=wx.Panel(self)
 		self.prev_song=''
 		self.is_update=''
@@ -234,8 +254,8 @@ class MainFrame(wx.Frame):
 		self.nb=wx.Notebook(self.p)
 		t1=TabPanel(self.nb)
 #       t1.SetDropTarget(TabDrop(t1))
-		self.nb.AddPage(t1, "PlayList")
-		self.l=wx.ListView(t1, wx.NewId(), style = wx.LC_REPORT|wx.LC_VRULES)
+		self.nb.AddPage(t1, _("PlayList"))
+		self.l=wx.ListView(t1, wx.NewId(), style = wx.LC_REPORT|wx.LC_NO_HEADER)
 		#~ t1.Add(self.l)
 		#~ vbox1.Add(nb, 1, wx.ALL|wx.EXPAND)
 
@@ -243,14 +263,14 @@ class MainFrame(wx.Frame):
 		#~ t1.SetSizer(vbox2)
 		self.main_tb = wx.ToolBar(self, -1, style=wx.TB_FLAT|wx.TB_HORIZONTAL|wx.TB_DOCKABLE)
 
-		prev_b=self.main_tb.AddLabelTool(wx.NewId(), "Previous", wx.ArtProvider.GetBitmap("gtk-media-previous", wx.ART_TOOLBAR))
-		next_b=self.main_tb.AddLabelTool(wx.NewId(), "Next", wx.ArtProvider.GetBitmap("gtk-media-next", wx.ART_TOOLBAR))
+		prev_b=self.main_tb.AddLabelTool(wx.NewId(), _("Previous"), wx.ArtProvider.GetBitmap("gtk-media-previous", wx.ART_TOOLBAR))
+		next_b=self.main_tb.AddLabelTool(wx.NewId(), _("Next"), wx.ArtProvider.GetBitmap("gtk-media-next", wx.ART_TOOLBAR))
 		self.main_tb.AddSeparator()
-		stop_b=self.main_tb.AddLabelTool(wx.NewId(), "Stop", wx.ArtProvider.GetBitmap("gtk-media-stop", wx.ART_TOOLBAR))
-		pause_b=self.main_tb.AddLabelTool(wx.NewId(), "Pause", wx.ArtProvider.GetBitmap("gtk-media-pause", wx.ART_TOOLBAR))
-		play_b=self.main_tb.AddLabelTool(wx.NewId(), "Play", wx.ArtProvider.GetBitmap("gtk-media-play", wx.ART_TOOLBAR))
+		stop_b=self.main_tb.AddLabelTool(wx.NewId(), _("Stop"), wx.ArtProvider.GetBitmap("gtk-media-stop", wx.ART_TOOLBAR))
+		pause_b=self.main_tb.AddLabelTool(wx.NewId(), _("Pause"), wx.ArtProvider.GetBitmap("gtk-media-pause", wx.ART_TOOLBAR))
+		play_b=self.main_tb.AddLabelTool(wx.NewId(), _("Play"), wx.ArtProvider.GetBitmap("gtk-media-play", wx.ART_TOOLBAR))
 		self.main_tb.AddSeparator()
-		find_b=self.main_tb.AddLabelTool(wx.NewId(), "Find", wx.ArtProvider.GetBitmap("gtk-find", wx.ART_TOOLBAR))
+		find_b=self.main_tb.AddLabelTool(wx.NewId(), _("Find"), wx.ArtProvider.GetBitmap("gtk-find", wx.ART_TOOLBAR))
 		self.main_tb.AddSeparator()
 		#~ add_b_id=wx.NewId()
 
@@ -277,7 +297,7 @@ class MainFrame(wx.Frame):
 		self.sb.SetFieldsCount(5)
 		fc=wx.FileConfig(fcname)
 		self.l.InsertColumn(0, '', width = fc.ReadInt('c0', 30) )
-		self.l.InsertColumn(1, 'Title', width = fc.ReadInt('c1', 250) )
+		self.l.InsertColumn(1, _('Title'), width = fc.ReadInt('c1', 250) )
 		self.l.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.DblClick)
 		self.l.SetFocus()
 		self.IsDrag=False
@@ -287,26 +307,26 @@ class MainFrame(wx.Frame):
 		self.pr.Bind(wx.EVT_LEFT_UP, self.OnLeftClick)
 		self.pllist=[]
 		self.menu=wx.Menu()
-		mDel=self.menu.Append(wx.NewId(), "Delete")
+		mDel=self.menu.Append(wx.NewId(), _("Delete"))
 		mDel.SetBitmaps(wx.ArtProvider.GetBitmap("gtk-delete", wx.ART_MENU), wx.NullBitmap)
 		self.menu.AppendSeparator()
-		mSearchPL=self.menu.Append(wx.NewId(), 'Search in PlayList')
-		mSearchDb=self.menu.Append(wx.NewId(), 'Search DB')
+		mSearchPL=self.menu.Append(wx.NewId(), _('Search in PlayList'))
+		mSearchDb=self.menu.Append(wx.NewId(), _('Search DB'))
 		#~ mSearchDb.SetBitmap(wx.ArtProvider.GetBitmap(gtk.STOCK_FIND, wx.ART_MENU))
 		self.menu.AppendSeparator()
 		self.l.Bind(wx.EVT_CONTEXT_MENU, self.OnRightBtn)
 		self.menu.Bind(wx.EVT_MENU, self.DelItem, mDel)
 		self.menu.Bind(wx.EVT_MENU, self.SearchDB, mSearchDb)
 		self.menu.Bind(wx.EVT_MENU, self.SearchPl, mSearchPL)
-		self.menu.Bind(wx.EVT_MENU, self.ShowLInfo, self.menu.Append(wx.NewId(), 'Song Info'))
+		self.menu.Bind(wx.EVT_MENU, self.ShowLInfo, self.menu.Append(wx.NewId(), _('Song Info')))
 		self.Bind(wx.EVT_CLOSE, self.OnClose)
 		t2=TabPanel(self.nb)
-		self.nb.AddPage(t2, "Music Library")
+		self.nb.AddPage(t2, _("Music Library"))
 		self.tw=MPDTree(t2, id=-1, style=wx.TR_HAS_BUTTONS|wx.TR_DEFAULT_STYLE|wx.SUNKEN_BORDER|wx.TR_MULTIPLE)
 		tree_tb=wx.ToolBar(t2, -1, style=wx.TB_FLAT|wx.TB_HORIZONTAL|wx.TB_DOCKABLE)
-		add_b=tree_tb.AddLabelTool(2024, "Add", wx.ArtProvider.GetBitmap("gtk-add", wx.ART_TOOLBAR))
+		add_b=tree_tb.AddLabelTool(2024, _("Add"), wx.ArtProvider.GetBitmap("gtk-add", wx.ART_TOOLBAR))
 		#~ update_b_id=wx.NewId()
-		update_b=tree_tb.AddLabelTool(2025, "Update", wx.ArtProvider.GetBitmap("gtk-refresh", wx.ART_TOOLBAR))
+		update_b=tree_tb.AddLabelTool(2025, _("Update"), wx.ArtProvider.GetBitmap("gtk-refresh", wx.ART_TOOLBAR))
 		tree_tb.Realize()
 		t2.sizer.Add(tree_tb, 0, wx.ALL|wx.EXPAND)
 		t2.sizer.Add(self.tw, 1, wx.ALL|wx.EXPAND)
@@ -336,27 +356,27 @@ class MainFrame(wx.Frame):
 		#~ s.add_b.SetVisible(v.GetSelection==1)"""
 
 	def goNext(s,e):
-		client=mpd.MPDClient()
-		try:
-			client.connect(addr, port)
-		except:
-			return 0
+		#~ client=mpd.MPDClient()
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 0
 		client.next()
 		
 	def goPrev(s,e):
-		client=mpd.MPDClient()
-		try:
-			client.connect(addr, port)
-		except:
-			return 0
+		#~ client=mpd.MPDClient()
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 0
 		client.previous()
 		
 	def goPause(s,e):
-		client=mpd.MPDClient()
-		try:
-			client.connect(addr, port)
-		except:
-			return 0
+		#~ client=mpd.MPDClient()
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 0
 		status=client.status()['state']
 		if status=='play':
 			client.pause()
@@ -364,24 +384,24 @@ class MainFrame(wx.Frame):
 			client.play()
 
 	def goPlay(s, e):
-		print e
+		#~ print e
 		"""client=mpd.MPDClient()
 		try:
 			client.connect(addr, port)
 		except:
-			return 0
+			return 0"""
 		status=client.status()['state']
 		if status=='pause' or status=='stop':
 			client.play()
 		elif status=='play':
-			client.pause()"""
+			client.pause()
 
 	def goStop(s,e):
-		client=mpd.MPDClient()
-		try:
-			client.connect(addr, port)
-		except:
-			return 0
+		#~ client=mpd.MPDClient()
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 0
 		client.stop()
 			
 
@@ -389,15 +409,15 @@ class MainFrame(wx.Frame):
 		t3=TabPanel(self.nb)
 		#~ print (lst)
 		self.lst1=lst
-		self.nb.AddPage(t3, 'Search results'+' "'+swhat+'"', True)
-		self.ls=wx.ListView(t3, wx.NewId(), style = wx.LC_REPORT|wx.LC_VRULES)
+		self.nb.AddPage(t3, _('Search results')+' "'+swhat+'"', True)
+		self.ls=wx.ListView(t3, wx.NewId(), style = wx.LC_REPORT|wx.LC_NO_HEADER)
 		t3.sizer.Add(self.ls, 1, wx.ALL|wx.EXPAND)
 		fc=wx.FileConfig(fcname)
 		self.ls.InsertColumn(0, '', width = fc.ReadInt('c0', 30) )
-		self.ls.InsertColumn(1, 'Title', width = fc.ReadInt('c1', 150) )
-		self.ls.InsertColumn(2, 'Artist', width =  fc.ReadInt('c2', 150))
-		self.ls.InsertColumn(3, 'Album', width =  fc.ReadInt('c3', 150))
-		self.ls.InsertColumn(4, 'Year', width = fc.ReadInt('c4', 150))
+		self.ls.InsertColumn(1, _('Title'), width = fc.ReadInt('c1', 150) )
+		#~ self.ls.InsertColumn(2, _('Artist'), width =  fc.ReadInt('c2', 150))
+		#~ self.ls.InsertColumn(3, _('Album'), width =  fc.ReadInt('c3', 150))
+		#~ self.ls.InsertColumn(4, _('Year'), width = fc.ReadInt('c4', 150))
 		i=-1
 		for item in lst:
 			art=''
@@ -406,19 +426,33 @@ class MainFrame(wx.Frame):
 			tit=''
 			y=''
 			try:
-				art=item['artist'].decode('utf-8', errors='replace')
+				art=item['artist']
 			except: pass
 			try:
-				alb=item['album'].decode('utf-8', errors='replace')
+				alb=item['album']
 			except: pass
-			try: dat=item['date'].decode('utf-8', errors='replace')
+			try: dat=item['date']
 			except: pass
-			try: tit=item['title'].decode('utf-8', errors='replace')
+			try: tit=item['title']
 			except: pass
-			try: y=item['date'].decode('utf-8', errors='replace')
+			try: y=item['date']
 			except: pass
 			finally: i+=1
-			it=self.ls.Append(["",tit, art, alb, y])
+			try:
+				tim=float(item['time'])
+				ctime+=tim
+			except: pass
+			t=time.strftime("%H:%M:%S", time.gmtime(tim))
+			it=self.ls.Append(["", "%s :: %s :: %s :: %s :: (%s)"%
+			(
+			art.decode('utf-8', errors='replace'), 
+			y.decode('utf-8', errors='replace'), 
+			alb.decode('utf-8', errors='replace'), 
+			tit.decode('utf-8', errors='replace'),
+			t.decode('utf-8', errors='replace'))
+			]
+			)
+			#~ it=self.ls.Append(["",tit, art, alb, y])
 			self.ls.SetItemData(it, i)
 		self.ls.SetFocus()
 		self.ls.Bind(wx.EVT_CONTEXT_MENU, self.lsCtx)
@@ -433,14 +467,14 @@ class MainFrame(wx.Frame):
 			item=self.l.GetItem(i).GetData()
 			a.append(item)
 			i=self.l.GetNextSelected(i)
-		client=mpd.MPDClient()
-		try:
-			client.connect(addr, port)
-		except:
-			return 0
+		#~ client=mpd.MPDClient()
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 0
 		plid=client.playlistid()
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 		b=[]
 		for i in a:
 			b.append(plid[i-1])
@@ -465,7 +499,7 @@ class MainFrame(wx.Frame):
 		t4.SetupScrolling()
 		box1 = wx.StaticBox(t4, label="")
 		sbsizer = wx.StaticBoxSizer(box1, wx.VERTICAL)
-		s.nb.AddPage(t4, 'Info', True)
+		s.nb.AddPage(t4, _('Info'), True)
 		t4.SetSizer(sbsizer)
 		sbsizer.Add(box, 1, wx.ALL|wx.EXPAND, 1)
 		for j in range(0,33):
@@ -491,7 +525,7 @@ class MainFrame(wx.Frame):
 		#sizer.Add(btn, 0, wx.ALL, 10)
 		t4.SetSizer(sbsizer)
 		#TabPanel(self.nb)
-		self.nb.AddPage(t4, 'Info', True)
+		self.nb.AddPage(t4, _('Info'), True)
 		#gr=wx.GridSizer(len(tags1)+len(tags2)+1, 2)
 		#t4.SetSizer(gr)
 		#~ t4.sizer.Add(gr, 1, wx.ALL|wx.EXPAND)
@@ -528,7 +562,7 @@ class MainFrame(wx.Frame):
 		else:
 			e.Skip()
 	def SearchDB(self, event):
-		dlg = wx.TextEntryDialog(self, 'Text to find','Search in Database', "darkology", wx.OK|wx.CANCEL)
+		dlg = wx.TextEntryDialog(self, _('Text to find'),_('Search in Database'), "darkology", wx.OK|wx.CANCEL)
 		#~ dlg.SetValue("")
 		if dlg.ShowModal() != wx.ID_OK:
 			dlg.Destroy()
@@ -536,15 +570,15 @@ class MainFrame(wx.Frame):
 		dlg.Destroy()
 		swhat=dlg.GetValue().encode('utf-8')
 		client=mpd.MPDClient()
-		try:
-			client.connect(addr, port)
-		except:
-			return 1
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 1
 		self.res=client.search('any',swhat)
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 		if len(self.res)<=0:
-			dlg=wx.MessageDialog(self.p, 'Nothing found', 'Search results', wx.OK | wx.ICON_INFORMATION)
+			dlg=wx.MessageDialog(self.p, _('Nothing found'), _('Search results'), wx.OK | wx.ICON_INFORMATION)
 			dlg.ShowModal()
 			dlg.Destroy()
 			return 2
@@ -552,17 +586,17 @@ class MainFrame(wx.Frame):
 		#print res
 
 	def lsDblClick(self, e):
-		client=mpd.MPDClient()
+		#~ client=mpd.MPDClient()
 		#~ print dir(client)
-		try:
-			client.connect(addr, port)
-		except:
-			return 0
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 0
 		i=  self.res[e.GetItem().GetData()]
 		#~ print dict(i).get('file')
 		client.add(dict(i).get('file'))
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 		self.update_list()
 		#print
 
@@ -577,11 +611,11 @@ class MainFrame(wx.Frame):
 		mnu=wx.Menu()
 		pos = event.GetPosition()
 		pos = self.ScreenToClient(pos)
-		mnu.Bind(wx.EVT_MENU, self.DelNbPage, mnu.Append(wx.NewId(), "Close page"))
+		mnu.Bind(wx.EVT_MENU, self.DelNbPage, mnu.Append(wx.NewId(), _("Close page")))
 		mnu.AppendSeparator()
-		mnu.Bind(wx.EVT_MENU, self.AddSelToList, mnu.Append(wx.NewId(), 'Add selected to list'))
+		mnu.Bind(wx.EVT_MENU, self.AddSelToList, mnu.Append(wx.NewId(), _('Add selected to list')))
 		mnu.AppendSeparator()
-		mnu.Bind(wx.EVT_MENU, self.ShowLSInfo, mnu.Append(wx.NewId(), "Show info"))
+		mnu.Bind(wx.EVT_MENU, self.ShowLSInfo, mnu.Append(wx.NewId(), _("Show info")))
 		self.PopupMenu(mnu, pos )
 		#mDel=self.menu.AppendSeparator()
 
@@ -594,34 +628,34 @@ class MainFrame(wx.Frame):
 			#print dict(i).get('file')
 			#~ client.deleteid(id)
 			i=self.ls.GetNextSelected(i)
-		client=mpd.MPDClient()
+		#~ client=mpd.MPDClient()
 		#~ print dir(client)
-		try:
-			client.connect(addr, port)
-		except:
-			return 0
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 0
 		#~ print (a )
 		for i in a:
 			client.add(i)
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 		self.update_list()
 		#print
 
 	def SearchPl(self, event):
-		dlg = wx.TextEntryDialog(self.p, 'Text to find','Search in playlist')
+		dlg = wx.TextEntryDialog(self.p, _('Text to find'),_('Search in playlist'))
 		dlg.SetValue("")
 		if dlg.ShowModal() == wx.ID_OK:
 			swhat=dlg.GetValue()
-			client=mpd.MPDClient()
-			try:
-				client.connect(addr, port)
-			except:
-				return 1
+			#~ client=mpd.MPDClient()
+			#~ try:
+				#~ client.connect(addr, port)
+			#~ except:
+				#~ return 1
 			self.res=client.playlistsearch('any',swhat)
 			#~ print self.res
-			client.close()
-			client.disconnect()
+			#~ client.close()
+			#~ client.disconnect()
 		dlg.Destroy()
 		if len(self.res)<=0:
 			return 2
@@ -645,11 +679,11 @@ class MainFrame(wx.Frame):
 			a.append(item.GetData())
 			#~ client.deleteid(id)
 			i=self.l.GetNextSelected(i)
-		client=mpd.MPDClient()
-		try:
-			client.connect(addr, port)
-		except:
-			pass
+		#~ client=mpd.MPDClient()
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ pass
 		pl=client.playlistinfo()
 		t1=0
 		t=0
@@ -659,16 +693,16 @@ class MainFrame(wx.Frame):
 					t=j['time']
 			t1+=int(t)
 		if t1>=86400:
-			t1=time.strftime("Selected: %d:%H:%M:%S", time.gmtime(t1))
+			t1=time.strftime(_("Selected: %d:%H:%M:%S"), time.gmtime(t1))
 		elif t1 >= 3600:
-			t1=time.strftime("Selected: %H:%M:%S", time.gmtime(t1))
+			t1=time.strftime(_("Selected: %H:%M:%S"), time.gmtime(t1))
 		elif t1>=0:
-			t1=time.strftime("Selected: %M:%S", time.gmtime(t1))
+			t1=time.strftime(_("Selected: %M:%S"), time.gmtime(t1))
 		else:
 			t1=''
 		self.sb.SetStatusText('%s'%t1, 3)
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 
 	def DelItem(self, event):
 		self.timer.Stop()
@@ -680,16 +714,16 @@ class MainFrame(wx.Frame):
 			#~ client.deleteid(id)
 			i=self.l.GetNextSelected(i)
 		a.reverse()
-		client=mpd.MPDClient()
-		try:client.connect(addr, port)
-		except:
-			self.timer.Start()
-			return 255
+		#~ client=mpd.MPDClient()
+		#~ try:client.connect(addr, port)
+		#~ except:
+			#~ self.timer.Start()
+			#~ return 255
 		for i in a:
 			try:client.deleteid(i)
 			except:pass
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 		self.timer.Start()
 
 	def OnRightBtn(self, event):
@@ -702,14 +736,14 @@ class MainFrame(wx.Frame):
 		x=event.GetX()
 		w,h=self.pr.GetSize()
 		pos=x*max/w
-		client=mpd.MPDClient()
-		try:
-			client.connect(addr, port)
-		except:
-			return 0
+		#~ client=mpd.MPDClient()
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 0
 		client.seekid(client.currentsong()['id'], pos)
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 
 	def getItemInfo(self, idx):
 		a=[]
@@ -733,12 +767,12 @@ class MainFrame(wx.Frame):
 			a.append(self.l.GetItemData(idx))
 			#~ print self.l.GetItemData(idx)
 		#~ print a
-		if len(a)>0:
-			client=mpd.MPDClient()
-			try:
-				client.connect(addr, port)
-			except:
-				return 0
+		#~ if len(a)>0:
+			#~ client=mpd.MPDClient()
+			#~ try:
+				#~ client.connect(addr, port)
+			#~ except:
+				#~ return 0
 		itemdata = cPickle.dumps(a, 1)
 		ldata = wx.CustomDataObject("ListCtrlItems")
 		ldata.SetData(itemdata)
@@ -763,46 +797,46 @@ class MainFrame(wx.Frame):
 			rect = self.l.GetItemRect(index)
 			if y > rect.y - self.l.GetItemRect(0).y + rect.height/2:
 				index += 1
-		client=mpd.MPDClient()
-		try:
-			client.connect(addr, port)
-		except:
-			return 0
+		#~ client=mpd.MPDClient()
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 0
 		for i in seq: # insert the item data
 			client.moveid(i, index)
 			index+=1
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 		self.update_list()
 
 
 	def _addtolist(self, x,y, d):
 		#print d
-		client=mpd.MPDClient()
+		#~ client=mpd.MPDClient()
 		#~ print dir(client)
-		try:
-			client.connect(addr, port)
-		except:
-			return 0
+		#~ try:
+			#~ client.connect(addr, port)
+		#~ except:
+			#~ return 0
 		for i in d:
 			#print 'i=', i
 			if dict(i).get('directory', False):
 				client.add(i[0][1])
 			elif dict(i).get('file', False):
 				client.add(i[5][1])
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 		self.update_list()
 
 	def DblClick(self, event):
 		print event
 		id=event.GetItem().GetData()
-		client=mpd.MPDClient()
-		try:client.connect(addr, port)
-		except:return 0
+		#~ client=mpd.MPDClient()
+		#~ try:client.connect(addr, port)
+		#~ except:return 0
 		client.playid(id)
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 
 	def getfitem(self, lst):
 		if hasattr(lst, '__getitem') or hasattr(lst, "__iter__"):
@@ -813,40 +847,40 @@ class MainFrame(wx.Frame):
 		try:
 			artist=i['artist']
 		except KeyError:
-			artist = "Unknown Artist"
+			artist = _("Unknown Artist")
 		try:
 			album=i['album']
 		except KeyError:
-			album = "Unknown Artist"
+			album = _("Unknown Artist")
 		try:
 			title=i['title']
 		except KeyError:
 			try:
 				title = i["file"].split("/")[-1]
 			except KeyError:
-				title= "Unknown Title"
+				title= _("Unknown Title")
 		try:
 			year=i['date']
 		except KeyError:
-			year = "Unknown Year"
+			year = _("Unknown Year")
 		return [title, album, artist, year]
 
 	def update_list(self, event=0):
 		cid="0"
 		self.l.Freeze()
 		self.timer.Stop()
-		client=mpd.MPDClient()
-		try:client.connect(addr, port)
-		except:
-			self.l.Thaw()
-			self.timer.Start(1000)
-			return True
+		#~ client=mpd.MPDClient()
+		#~ try:client.connect(addr, port)
+		#~ except:
+			#~ self.l.Thaw()
+			#~ self.timer.Start(1000)
+			#~ return True
 		plid=client.playlistid()
 		try:cid = client.currentsong()['id']
 		except:cid="0"
 		cst=client.status()['state']
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 		list_total  = self.l.GetItemCount()
 		list_top    = self.l.GetTopItem()
 		list_pp     = self.l.GetCountPerPage()
@@ -883,7 +917,7 @@ class MainFrame(wx.Frame):
 		else:fmt="%M:%S"
 
 		print fmt
-		self.sb.SetStatusText("Length: %s"%time.strftime(fmt, time.gmtime(ctime)),2)
+		self.sb.SetStatusText(_("Length: %s")%time.strftime(fmt, time.gmtime(ctime)),2)
 		if list_bottom>0:
 			if list_bottom>=self.l.GetItemCount():
 				list_bottom=self.l.GetItemCount()-1
@@ -893,16 +927,16 @@ class MainFrame(wx.Frame):
 		return True
 
 	def update_timer(self, e=0):
-		client=mpd.MPDClient()
-		try:client.connect(addr, port)
-		except:return True
+		#~ client=mpd.MPDClient()
+		#~ try:client.connect(addr, port)
+		#~ except:return True
 		pll=client.playlist()
 		if self.pllist!= pll:
 			self.pllist=pll
 			self.update_list()
 		clst= client.status()
-		if 'updating_db' in clst.keys():
-			self.sb.SetStatusText('updating_db', 4)
+		if _('updating_db') in clst.keys():
+			self.sb.SetStatusText(_('updating_db'), 4)
 		else: self.sb.SetStatusText('', 4)
 		cst=clst['state']
 		if 'songid' in clst:
@@ -927,8 +961,8 @@ class MainFrame(wx.Frame):
 		else:
 			self.pr.SetValue(0)
 			self.sb.SetStatusText("", 0)
-		client.close()
-		client.disconnect()
+		#~ client.close()
+		#~ client.disconnect()
 		return True
 
 	def OnClose(self, event):
@@ -949,8 +983,14 @@ class MainFrame(wx.Frame):
 
 
 if __name__=="__main__":
+ gettext.bindtextdomain(APP_IND+'.mo', DIR)
+ gettext.textdomain(APP_IND)
  app=wx.App()
  fc=wx.FileConfig(fcname)
+ make_con()
+ _check()
  mf=MainFrame(fc.ReadInt("x", 50),fc.ReadInt('y', 50),fc.ReadInt('w', 720),fc.ReadInt('h', 500))
+ addr=fc.Read('addr', 'localhost')
+ port=fc.ReadInt('port', 6600)
  mf.Show()
  app.MainLoop()
